@@ -16,18 +16,22 @@ Available in English, Russian and Ukrainian.
 
 ## Status
 
-Early development. Milestone 1 of 6 is done: the app builds, opens, and reports the
-system it is running on. Installing apps and applying tweaks are not implemented yet —
-the Apps, Tuning and Profiles screens say so plainly rather than pretending.
+Early development. The app builds, opens, reports the system it is running on, and can
+perform privileged operations through its elevated helper. Installing apps and applying
+tweaks are not implemented yet — the Apps, Tuning and Profiles screens say so plainly
+rather than pretending.
 
 | Milestone | What it delivers | Status |
 | --- | --- | --- |
 | M0 | Workspace, Tauri + Vue shell, i18n, CI | Done |
 | M1 | System dashboard end-to-end | Done |
-| M2 | Elevated broker + named-pipe IPC | Next |
-| M3 | Package providers, catalog, Apps + Profiles | Planned |
+| M2 | Elevated broker + named-pipe IPC | Done |
+| M3 | Package providers, catalog, Apps + Profiles | Next |
 | M4 | Tweak engine, revert journal, debloat | Planned |
 | M5 | Auto-update, release pipeline, v0.1.0 | Planned |
+
+Known gap: `tauri build` does not yet bundle `sio-broker.exe`, so an *installed* copy
+cannot elevate. Running from source works, because cargo puts both binaries side by side.
 
 ## Where software comes from
 
@@ -126,9 +130,16 @@ npm run typecheck --prefix apps/desktop && npm test --prefix apps/desktop
 
 Tests that would actually modify the system are `#[ignore]`-gated and never run in CI.
 The suite covers revert-plan inversion, catalog validation against the real shipped
-files, translation completeness across all three locales, and the broker handshake —
-including that a wrong nonce, a truncated nonce, a version mismatch, and a skipped
-handshake are all rejected.
+files, translation completeness across all three locales, real registry round trips
+including `REG_EXPAND_SZ` and `REG_MULTI_SZ`, and the broker handshake — including that
+a wrong nonce, a truncated nonce, a version mismatch and a skipped handshake are all
+rejected.
+
+`crates/sio-broker/tests/pipe_roundtrip.rs` starts the real `sio-broker.exe` over a real
+named pipe and performs real registry work. It spawns the helper *unelevated*, since a
+UAC prompt cannot be answered by a test — so everything downstream of elevation is
+covered automatically, and only `ShellExecuteExW` itself needs a human. Verify that part
+by hand: **Settings → Administrator access → Test administrator access**.
 
 Run real installs and tweaks **on a throwaway VM**, not on a machine you care about.
 
