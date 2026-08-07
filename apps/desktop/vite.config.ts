@@ -26,9 +26,12 @@ export default defineConfig({
   },
 
   build: {
+    // WebView2 tracks Edge, so a modern baseline is safe and produces smaller output.
     target: 'chrome110',
     sourcemap: !!process.env.TAURI_ENV_DEBUG,
-    minify: process.env.TAURI_ENV_DEBUG ? false : 'esbuild',
+    // Boolean, not 'esbuild': Vite 8 minifies with oxc, and naming esbuild explicitly
+    // pulls in a package that is no longer bundled.
+    minify: !process.env.TAURI_ENV_DEBUG,
   },
 
   test: {
