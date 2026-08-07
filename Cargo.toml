@@ -15,7 +15,7 @@ edition = "2021"
 # Floor set by `sysinfo`, which is our strictest dependency.
 rust-version = "1.95"
 license = "MIT"
-repository = "https://github.com/mykaaaa1/sio-myka"
+repository = "https://github.com/MyKa322/sio-myka"
 authors = ["MyKa"]
 
 [workspace.dependencies]
