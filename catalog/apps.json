@@ -1,0 +1,295 @@
+{
+  "schema_version": 1,
+  "apps": [
+    {
+      "id": "firefox",
+      "name": "Mozilla Firefox",
+      "category": "browser",
+      "homepage": "https://www.mozilla.org/firefox/",
+      "description": {
+        "en": "Independent browser with strong privacy defaults.",
+        "ru": "Независимый браузер с упором на приватность.",
+        "uk": "Незалежний браузер із наголосом на приватність."
+      },
+      "sources": [
+        { "provider": "winget", "id": "Mozilla.Firefox" },
+        { "provider": "chocolatey", "id": "firefox" }
+      ],
+      "tags": ["browser"]
+    },
+    {
+      "id": "chrome",
+      "name": "Google Chrome",
+      "category": "browser",
+      "homepage": "https://www.google.com/chrome/",
+      "description": {
+        "en": "Google's browser.",
+        "ru": "Браузер от Google.",
+        "uk": "Браузер від Google."
+      },
+      "sources": [
+        { "provider": "winget", "id": "Google.Chrome" },
+        { "provider": "chocolatey", "id": "googlechrome" }
+      ],
+      "tags": ["browser"]
+    },
+    {
+      "id": "brave",
+      "name": "Brave",
+      "category": "browser",
+      "homepage": "https://brave.com/",
+      "description": {
+        "en": "Chromium browser with ad and tracker blocking built in.",
+        "ru": "Браузер на Chromium со встроенной блокировкой рекламы и трекеров.",
+        "uk": "Браузер на Chromium із вбудованим блокуванням реклами та трекерів."
+      },
+      "sources": [
+        { "provider": "winget", "id": "Brave.Brave" },
+        { "provider": "chocolatey", "id": "brave" }
+      ],
+      "tags": ["browser", "privacy"]
+    },
+    {
+      "id": "7zip",
+      "name": "7-Zip",
+      "category": "utilities",
+      "homepage": "https://www.7-zip.org/",
+      "description": {
+        "en": "Archiver that opens practically every format.",
+        "ru": "Архиватор, открывающий практически любой формат.",
+        "uk": "Архіватор, що відкриває практично будь-який формат."
+      },
+      "sources": [
+        { "provider": "winget", "id": "7zip.7zip" },
+        { "provider": "chocolatey", "id": "7zip" },
+        { "provider": "scoop", "id": "7zip" }
+      ],
+      "tags": ["archive", "essential"]
+    },
+    {
+      "id": "vlc",
+      "name": "VLC media player",
+      "category": "media",
+      "homepage": "https://www.videolan.org/vlc/",
+      "description": {
+        "en": "Plays every video and audio format without extra codecs.",
+        "ru": "Проигрывает любые видео и аудио без дополнительных кодеков.",
+        "uk": "Відтворює будь-яке відео та аудіо без додаткових кодеків."
+      },
+      "sources": [
+        { "provider": "winget", "id": "VideoLAN.VLC" },
+        { "provider": "chocolatey", "id": "vlc" }
+      ],
+      "tags": ["media", "essential"]
+    },
+    {
+      "id": "notepadplusplus",
+      "name": "Notepad++",
+      "category": "utilities",
+      "homepage": "https://notepad-plus-plus.org/",
+      "description": {
+        "en": "Fast text editor with syntax highlighting.",
+        "ru": "Быстрый текстовый редактор с подсветкой синтаксиса.",
+        "uk": "Швидкий текстовий редактор із підсвічуванням синтаксису."
+      },
+      "sources": [
+        { "provider": "winget", "id": "Notepad++.Notepad++" },
+        { "provider": "chocolatey", "id": "notepadplusplus" }
+      ],
+      "tags": ["editor"]
+    },
+    {
+      "id": "vscode",
+      "name": "Visual Studio Code",
+      "category": "development",
+      "homepage": "https://code.visualstudio.com/",
+      "description": {
+        "en": "Code editor with a large extension ecosystem.",
+        "ru": "Редактор кода с большой экосистемой расширений.",
+        "uk": "Редактор коду з великою екосистемою розширень."
+      },
+      "sources": [
+        { "provider": "winget", "id": "Microsoft.VisualStudioCode" },
+        { "provider": "chocolatey", "id": "vscode" }
+      ],
+      "tags": ["editor", "development"]
+    },
+    {
+      "id": "git",
+      "name": "Git",
+      "category": "development",
+      "homepage": "https://git-scm.com/",
+      "description": {
+        "en": "Version control, plus Git Bash.",
+        "ru": "Система контроля версий вместе с Git Bash.",
+        "uk": "Система контролю версій разом із Git Bash."
+      },
+      "sources": [
+        { "provider": "winget", "id": "Git.Git" },
+        { "provider": "chocolatey", "id": "git" },
+        { "provider": "scoop", "id": "git" }
+      ],
+      "tags": ["development"]
+    },
+    {
+      "id": "powertoys",
+      "name": "Microsoft PowerToys",
+      "category": "utilities",
+      "homepage": "https://learn.microsoft.com/windows/powertoys/",
+      "description": {
+        "en": "Window management, a better search, and other power-user tools.",
+        "ru": "Управление окнами, улучшенный поиск и другие инструменты.",
+        "uk": "Керування вікнами, покращений пошук та інші інструменти."
+      },
+      "sources": [
+        { "provider": "winget", "id": "Microsoft.PowerToys" },
+        { "provider": "chocolatey", "id": "powertoys" }
+      ],
+      "tags": ["utilities", "productivity"]
+    },
+    {
+      "id": "windowsterminal",
+      "name": "Windows Terminal",
+      "category": "development",
+      "homepage": "https://learn.microsoft.com/windows/terminal/",
+      "description": {
+        "en": "Tabbed terminal for PowerShell, CMD and WSL.",
+        "ru": "Терминал с вкладками для PowerShell, CMD и WSL.",
+        "uk": "Термінал із вкладками для PowerShell, CMD і WSL."
+      },
+      "sources": [
+        { "provider": "winget", "id": "Microsoft.WindowsTerminal" },
+        { "provider": "chocolatey", "id": "microsoft-windows-terminal" }
+      ],
+      "tags": ["development", "terminal"]
+    },
+    {
+      "id": "telegram",
+      "name": "Telegram Desktop",
+      "category": "communication",
+      "homepage": "https://desktop.telegram.org/",
+      "description": {
+        "en": "Messenger with a full desktop client.",
+        "ru": "Мессенджер с полноценным десктопным клиентом.",
+        "uk": "Месенджер із повноцінним десктопним клієнтом."
+      },
+      "sources": [
+        { "provider": "winget", "id": "Telegram.TelegramDesktop" },
+        { "provider": "chocolatey", "id": "telegram" }
+      ],
+      "tags": ["chat"]
+    },
+    {
+      "id": "discord",
+      "name": "Discord",
+      "category": "communication",
+      "homepage": "https://discord.com/",
+      "description": {
+        "en": "Voice and text chat.",
+        "ru": "Голосовой и текстовый чат.",
+        "uk": "Голосовий і текстовий чат."
+      },
+      "sources": [
+        { "provider": "winget", "id": "Discord.Discord" },
+        { "provider": "chocolatey", "id": "discord" }
+      ],
+      "tags": ["chat", "gaming"]
+    },
+    {
+      "id": "steam",
+      "name": "Steam",
+      "category": "gaming",
+      "homepage": "https://store.steampowered.com/",
+      "description": {
+        "en": "Game library and store.",
+        "ru": "Библиотека игр и магазин.",
+        "uk": "Бібліотека ігор і магазин."
+      },
+      "sources": [
+        { "provider": "winget", "id": "Valve.Steam" },
+        { "provider": "chocolatey", "id": "steam" }
+      ],
+      "tags": ["gaming"]
+    },
+    {
+      "id": "obsstudio",
+      "name": "OBS Studio",
+      "category": "media",
+      "homepage": "https://obsproject.com/",
+      "description": {
+        "en": "Screen recording and live streaming.",
+        "ru": "Запись экрана и трансляции.",
+        "uk": "Запис екрана та трансляції."
+      },
+      "sources": [
+        { "provider": "winget", "id": "OBSProject.OBSStudio" },
+        { "provider": "chocolatey", "id": "obs-studio" }
+      ],
+      "tags": ["media", "streaming"]
+    },
+    {
+      "id": "qbittorrent",
+      "name": "qBittorrent",
+      "category": "utilities",
+      "homepage": "https://www.qbittorrent.org/",
+      "description": {
+        "en": "Open-source torrent client with no bundled adware.",
+        "ru": "Torrent-клиент с открытым кодом и без рекламы в комплекте.",
+        "uk": "Torrent-клієнт із відкритим кодом і без реклами в комплекті."
+      },
+      "sources": [
+        { "provider": "winget", "id": "qBittorrent.qBittorrent" },
+        { "provider": "chocolatey", "id": "qbittorrent" }
+      ],
+      "tags": ["network"]
+    },
+    {
+      "id": "everything",
+      "name": "Everything",
+      "category": "utilities",
+      "homepage": "https://www.voidtools.com/",
+      "description": {
+        "en": "Instant filename search, far faster than Windows Search.",
+        "ru": "Мгновенный поиск файлов по имени, намного быстрее встроенного.",
+        "uk": "Миттєвий пошук файлів за іменем, значно швидший за вбудований."
+      },
+      "sources": [
+        { "provider": "winget", "id": "voidtools.Everything" },
+        { "provider": "chocolatey", "id": "everything" }
+      ],
+      "tags": ["search", "utilities"]
+    },
+    {
+      "id": "sharex",
+      "name": "ShareX",
+      "category": "graphics",
+      "homepage": "https://getsharex.com/",
+      "description": {
+        "en": "Screenshots, screen recording and annotation.",
+        "ru": "Скриншоты, запись экрана и аннотации.",
+        "uk": "Знімки екрана, запис відео та анотації."
+      },
+      "sources": [
+        { "provider": "winget", "id": "ShareX.ShareX" },
+        { "provider": "chocolatey", "id": "sharex" }
+      ],
+      "tags": ["screenshot"]
+    },
+    {
+      "id": "gimp",
+      "name": "GIMP",
+      "category": "graphics",
+      "homepage": "https://www.gimp.org/",
+      "description": {
+        "en": "Open-source raster image editor.",
+        "ru": "Растровый графический редактор с открытым кодом.",
+        "uk": "Растровий графічний редактор із відкритим кодом."
+      },
+      "sources": [
+        { "provider": "winget", "id": "GIMP.GIMP" },
+        { "provider": "chocolatey", "id": "gimp" }
+      ],
+      "tags": ["graphics"]
+    }
+  ]
+}

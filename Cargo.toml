@@ -1,0 +1,73 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/sio-core",
+    "crates/sio-winsys",
+    "crates/sio-packages",
+    "crates/sio-tweaks",
+    "crates/sio-broker",
+    "apps/desktop/src-tauri",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+# Floor set by `sysinfo`, which is our strictest dependency.
+rust-version = "1.95"
+license = "MIT"
+repository = "https://github.com/mykaaaa1/sio-myka"
+authors = ["MyKa"]
+
+[workspace.dependencies]
+# Internal crates
+sio-core = { path = "crates/sio-core" }
+sio-winsys = { path = "crates/sio-winsys" }
+sio-packages = { path = "crates/sio-packages" }
+sio-tweaks = { path = "crates/sio-tweaks" }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Errors
+thiserror = "2.0"
+anyhow = "1.0"
+
+# Async
+tokio = { version = "1.53", features = ["rt-multi-thread", "macros", "process", "io-util", "net", "time", "sync", "fs"] }
+async-trait = "0.1"
+futures = "0.3"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-appender = "0.2"
+
+# System
+sysinfo = "0.39"
+uuid = { version = "1", features = ["v4", "fast-rng"] }
+
+[workspace.dependencies.windows]
+version = "0.62"
+features = [
+    "Win32_Foundation",
+    "Win32_System_Registry",
+    "Win32_System_Threading",
+    "Win32_System_SystemInformation",
+    "Win32_System_Com",
+    "Win32_Security",
+    "Win32_System_Services",
+    "Win32_UI_Shell",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_Storage_FileSystem",
+    "Win32_Graphics_Dxgi",
+    "Win32_Graphics_Dxgi_Common",
+]
+
+# Release builds: optimise for size, since this ships over GitHub Releases.
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true
+# NB: deliberately not `panic = "abort"` — wry/WebView2 relies on unwinding.

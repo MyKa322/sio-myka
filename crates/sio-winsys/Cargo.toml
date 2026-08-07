@@ -1,0 +1,21 @@
+[package]
+name = "sio-winsys"
+description = "Windows system access for SIO: registry, services, Appx, restore points and hardware inventory. All platform-specific code lives here."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+sio-core.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+async-trait.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+sysinfo.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+windows.workspace = true

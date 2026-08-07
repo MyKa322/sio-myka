@@ -1,0 +1,33 @@
+# Rust
+/target/
+**/target/
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Tauri
+apps/desktop/src-tauri/gen/
+
+# Updater signing keys — NEVER commit these
+*.key
+*.key.pub
+!*.pub.example
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Logs
+*.log
+npm-debug.log*

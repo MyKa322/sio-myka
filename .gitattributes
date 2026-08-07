@@ -1,0 +1,15 @@
+# Normalise to LF in the repository. Without this, a Windows checkout commits CRLF and
+# the Linux catalog-validation job sees a different file than the Windows jobs do.
+* text=auto eol=lf
+
+# Windows-only tooling that genuinely needs CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary assets — never touch these.
+*.png binary
+*.ico binary
+*.icns binary
+*.exe binary
+*.dll binary

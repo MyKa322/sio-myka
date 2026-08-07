@@ -1,0 +1,80 @@
+{
+  "app": {
+    "name": "SIO",
+    "tagline": "Set up Windows the way you like it"
+  },
+  "nav": {
+    "dashboard": "Overview",
+    "apps": "Apps",
+    "tweaks": "Tuning",
+    "profiles": "Profiles",
+    "settings": "Settings"
+  },
+  "common": {
+    "loading": "Loading…",
+    "retry": "Try again",
+    "error": "Something went wrong",
+    "unknown": "Unknown",
+    "free": "free",
+    "used": "used",
+    "details": "Details",
+    "cancel": "Cancel"
+  },
+  "dashboard": {
+    "title": "System overview",
+    "subtitle": "What this machine is running right now",
+    "operatingSystem": "Operating system",
+    "processor": "Processor",
+    "memory": "Memory",
+    "graphics": "Graphics",
+    "storage": "Storage",
+    "edition": "Edition",
+    "version": "Version",
+    "build": "Build",
+    "architecture": "Architecture",
+    "machineName": "Computer name",
+    "activation": "Activation",
+    "cores": "{physical} cores · {logical} threads",
+    "coresLogicalOnly": "{logical} threads",
+    "noGpuDetected": "No dedicated graphics detected",
+    "lowSpaceWarning": "Running low on space — a large install profile may not fit"
+  },
+  "activation": {
+    "licensed": "Activated",
+    "grace_period": "Grace period",
+    "notification": "Activation required",
+    "unlicensed": "Not activated",
+    "unknown": "Unknown"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Preferences for this app",
+    "language": "Language",
+    "languageHint": "Follows your Windows language by default",
+    "theme": "Theme",
+    "themeSystem": "Match Windows",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "about": "About",
+    "version": "Version"
+  },
+  "placeholder": {
+    "title": "Not built yet",
+    "apps": "Browse a curated catalog and install everything in one pass. Arriving in milestone 3.",
+    "tweaks": "Privacy, performance and interface tuning — every change reversible. Arriving in milestone 4.",
+    "profiles": "Save your selections and replay them after the next reinstall. Arriving in milestone 3."
+  },
+  "errors": {
+    "io": "A file could not be read or written",
+    "json": "Malformed data",
+    "catalogInvalid": "The catalog could not be read",
+    "providerUnavailable": "That package manager is not available on this system",
+    "packageCommandFailed": "The package manager reported a failure",
+    "elevationDeclined": "Administrator access was declined",
+    "brokerFailed": "The elevated helper stopped responding",
+    "registryFailed": "A registry operation failed",
+    "windowsApiFailed": "Windows returned an error",
+    "unknownTweak": "That tweak is not in the catalog",
+    "unknown": "Unexpected error"
+  }
+}

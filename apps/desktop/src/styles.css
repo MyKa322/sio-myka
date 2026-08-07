@@ -1,0 +1,99 @@
+@import 'tailwindcss';
+
+/* Dark mode is driven by a class on <html>, set from the user's setting rather than
+   only the OS preference — the Settings screen lets it be overridden. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* `inline` makes the generated utilities reference the custom properties directly,
+   so flipping .dark re-themes the whole app without regenerating any CSS. */
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-panel: var(--panel);
+  --color-panel-muted: var(--panel-muted);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+
+  --font-sans: 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --radius-panel: 0.75rem;
+}
+
+:root {
+  --canvas: oklch(0.97 0.003 260);
+  --panel: oklch(1 0 0);
+  --panel-muted: oklch(0.965 0.004 260);
+  --line: oklch(0.9 0.006 260);
+  --ink: oklch(0.24 0.015 260);
+  --ink-muted: oklch(0.52 0.014 260);
+  --accent: oklch(0.55 0.19 271);
+  --accent-ink: oklch(0.99 0 0);
+  --danger: oklch(0.58 0.21 25);
+  --warning: oklch(0.72 0.16 75);
+  --success: oklch(0.62 0.15 155);
+}
+
+.dark {
+  --canvas: oklch(0.19 0.012 260);
+  --panel: oklch(0.24 0.014 260);
+  --panel-muted: oklch(0.28 0.014 260);
+  --line: oklch(0.34 0.014 260);
+  --ink: oklch(0.95 0.004 260);
+  --ink-muted: oklch(0.72 0.012 260);
+  --accent: oklch(0.68 0.16 271);
+  --accent-ink: oklch(0.18 0.01 260);
+  --danger: oklch(0.68 0.19 25);
+  --warning: oklch(0.79 0.15 75);
+  --success: oklch(0.72 0.14 155);
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  /* A desktop app is not a document: text selection on chrome feels broken. */
+  user-select: none;
+  overflow: hidden;
+}
+
+/* Re-enable selection where users legitimately want to copy: log output, versions,
+   error detail. */
+.selectable {
+  user-select: text;
+  cursor: text;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

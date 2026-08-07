@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "tweaks": [
+    {
+      "id": "privacy.telemetry.disable",
+      "name": {
+        "en": "Disable telemetry",
+        "ru": "Отключить телеметрию",
+        "uk": "Вимкнути телеметрію"
+      },
+      "description": {
+        "en": "Sets the diagnostic data policy to the minimum and stops the Connected User Experiences service.",
+        "ru": "Задаёт минимальный уровень диагностических данных и останавливает службу DiagTrack.",
+        "uk": "Задає мінімальний рівень діагностичних даних і зупиняє службу DiagTrack."
+      },
+      "category": "telemetry",
+      "risk": "low",
+      "applies": "both",
+      "requires_restart": false,
+      "actions": [
+        {
+          "type": "registry",
+          "hive": "HKLM",
+          "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection",
+          "name": "AllowTelemetry",
+          "value_type": "dword",
+          "value": 0
+        },
+        {
+          "type": "service",
+          "name": "DiagTrack",
+          "start_type": "disabled",
+          "stop": true
+        }
+      ]
+    },
+    {
+      "id": "privacy.advertising_id.disable",
+      "name": {
+        "en": "Disable the advertising ID",
+        "ru": "Отключить рекламный идентификатор",
+        "uk": "Вимкнути рекламний ідентифікатор"
+      },
+      "description": {
+        "en": "Stops apps using a per-user advertising identifier to profile you across apps.",
+        "ru": "Запрещает приложениям использовать рекламный идентификатор для отслеживания.",
+        "uk": "Забороняє програмам використовувати рекламний ідентифікатор для стеження."
+      },
+      "category": "privacy",
+      "risk": "low",
+      "applies": "both",
+      "requires_restart": false,
+      "actions": [
+        {
+          "type": "registry",
+          "hive": "HKCU",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo",
+          "name": "Enabled",
+          "value_type": "dword",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "interface.explorer.show_file_extensions",
+      "name": {
+        "en": "Show file extensions",
+        "ru": "Показывать расширения файлов",
+        "uk": "Показувати розширення файлів"
+      },
+      "description": {
+        "en": "Makes Explorer show extensions, so a file named invoice.pdf.exe is visibly an executable.",
+        "ru": "Проводник покажет расширения — файл вроде invoice.pdf.exe сразу видно как программу.",
+        "uk": "Провідник покаже розширення — файл на кшталт invoice.pdf.exe одразу видно як програму."
+      },
+      "category": "interface",
+      "risk": "low",
+      "applies": "both",
+      "requires_restart": false,
+      "actions": [
+        {
+          "type": "registry",
+          "hive": "HKCU",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+          "name": "HideFileExt",
+          "value_type": "dword",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "interface.explorer.show_hidden_files",
+      "name": {
+        "en": "Show hidden files",
+        "ru": "Показывать скрытые файлы",
+        "uk": "Показувати приховані файли"
+      },
+      "description": {
+        "en": "Reveals hidden items in Explorer. System files stay hidden.",
+        "ru": "Показывает скрытые элементы в Проводнике. Системные файлы остаются скрытыми.",
+        "uk": "Показує приховані елементи у Провіднику. Системні файли лишаються прихованими."
+      },
+      "category": "interface",
+      "risk": "low",
+      "applies": "both",
+      "requires_restart": false,
+      "actions": [
+        {
+          "type": "registry",
+          "hive": "HKCU",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+          "name": "Hidden",
+          "value_type": "dword",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "interface.taskbar.align_left",
+      "name": {
+        "en": "Align the taskbar to the left",
+        "ru": "Выровнять панель задач по левому краю",
+        "uk": "Вирівняти панель завдань ліворуч"
+      },
+      "description": {
+        "en": "Restores the Windows 10 taskbar alignment.",
+        "ru": "Возвращает выравнивание панели задач как в Windows 10.",
+        "uk": "Повертає вирівнювання панелі завдань як у Windows 10."
+      },
+      "category": "interface",
+      "risk": "low",
+      "applies": "windows11_only",
+      "requires_restart": false,
+      "actions": [
+        {
+          "type": "registry",
+          "hive": "HKCU",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+          "name": "TaskbarAl",
+          "value_type": "dword",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "interface.taskbar.hide_widgets",
+      "name": {
+        "en": "Hide the Widgets button",
+        "ru": "Скрыть кнопку «Виджеты»",
+        "uk": "Приховати кнопку «Віджети»"
+      },
+      "description": {
+        "en": "Removes the news and interests button from the taskbar.",
+        "ru": "Убирает кнопку новостей и интересов с панели задач.",
+        "uk": "Прибирає кнопку новин та інтересів із панелі завдань."
+      },
+      "category": "interface",
+      "risk": "low",
+      "applies": "windows11_only",
+      "requires_restart": false,
+      "actions": [
+        {
+          "type": "registry",
+          "hive": "HKCU",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+          "name": "TaskbarDa",
+          "value_type": "dword",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "privacy.start_menu.disable_suggestions",
+      "name": {
+        "en": "Turn off Start menu suggestions",
+        "ru": "Отключить рекомендации в меню «Пуск»",
+        "uk": "Вимкнути рекомендації в меню «Пуск»"
+      },
+      "description": {
+        "en": "Stops Windows suggesting apps and content you did not install.",
+        "ru": "Windows перестанет предлагать приложения и контент, которые вы не устанавливали.",
+        "uk": "Windows перестане пропонувати програми та вміст, які ви не встановлювали."
+      },
+      "category": "privacy",
+      "risk": "low",
+      "applies": "both",
+      "requires_restart": false,
+      "actions": [
+        {
+          "type": "registry",
+          "hive": "HKCU",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+          "name": "SystemPaneSuggestionsEnabled",
+          "value_type": "dword",
+          "value": 0
+        },
+        {
+          "type": "registry",
+          "hive": "HKCU",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+          "name": "SilentInstalledAppsEnabled",
+          "value_type": "dword",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "performance.disable_startup_delay",
+      "name": {
+        "en": "Remove the startup app delay",
+        "ru": "Убрать задержку запуска автозагрузки",
+        "uk": "Прибрати затримку запуску автозавантаження"
+      },
+      "description": {
+        "en": "Startup apps launch immediately instead of after Windows' built-in delay.",
+        "ru": "Программы автозагрузки запускаются сразу, без встроенной задержки Windows.",
+        "uk": "Програми автозавантаження запускаються одразу, без вбудованої затримки Windows."
+      },
+      "category": "performance",
+      "risk": "medium",
+      "applies": "both",
+      "requires_restart": true,
+      "actions": [
+        {
+          "type": "registry",
+          "hive": "HKCU",
+          "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Serialize",
+          "name": "StartupDelayInMSec",
+          "value_type": "dword",
+          "value": 0
+        }
+      ]
+    }
+  ]
+}

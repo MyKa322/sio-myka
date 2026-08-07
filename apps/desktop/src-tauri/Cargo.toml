@@ -1,0 +1,34 @@
+[package]
+name = "sio-desktop"
+description = "SIO — Windows post-reinstall setup and tuning tool"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+default-run = "sio-desktop"
+
+# The library holds the app wiring so it can be exercised without launching a window;
+# `main.rs` is only a thin entry point.
+[lib]
+name = "sio_desktop_lib"
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+sio-core.workspace = true
+sio-winsys.workspace = true
+
+tauri = { version = "2", features = [] }
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[features]
+# Enabled by `tauri build --debug` and by the CLI's dev mode.
+custom-protocol = ["tauri/custom-protocol"]
