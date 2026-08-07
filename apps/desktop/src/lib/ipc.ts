@@ -1,5 +1,5 @@
 import { invoke } from '@tauri-apps/api/core'
-import type { CommandErrorPayload, SystemSnapshot } from './types'
+import type { CommandErrorPayload, ElevationStatus, SystemSnapshot } from './types'
 
 /**
  * An error raised by a Rust command.
@@ -64,4 +64,19 @@ export function systemSnapshot(): Promise<SystemSnapshot> {
 
 export function appVersion(): Promise<string> {
   return call<string>('app_version')
+}
+
+/** Whether we are elevated, and whether the helper is already running. */
+export function elevationStatus(): Promise<ElevationStatus> {
+  return call<ElevationStatus>('elevation_status')
+}
+
+/**
+ * Prove the elevated path works end to end.
+ *
+ * Triggers a UAC prompt on first use. Writes and immediately reverts one value under
+ * HKLM, leaving the registry unchanged.
+ */
+export function brokerSelfTest(): Promise<string> {
+  return call<string>('broker_self_test')
 }

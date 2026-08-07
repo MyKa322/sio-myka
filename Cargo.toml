@@ -46,6 +46,8 @@ tracing-appender = "0.2"
 # System
 sysinfo = "0.39"
 uuid = { version = "1", features = ["v4", "fast-rng"] }
+# OS CSPRNG, used for the broker pipe name and handshake nonce.
+getrandom = "0.3"
 
 [workspace.dependencies.windows]
 version = "0.62"

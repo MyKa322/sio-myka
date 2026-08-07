@@ -22,6 +22,7 @@
 #![warn(missing_debug_implementations)]
 
 pub mod catalog;
+pub mod codec;
 pub mod error;
 pub mod package;
 pub mod privileged;

@@ -4,6 +4,7 @@
 //! crates. This is what keeps the app testable without a window and makes the
 //! elevation strategy swappable in one place.
 
+mod broker_state;
 mod commands;
 mod error;
 
@@ -15,9 +16,12 @@ pub fn run() {
     init_tracing();
 
     tauri::Builder::default()
+        .manage(broker_state::BrokerState::new())
         .invoke_handler(tauri::generate_handler![
             commands::system_snapshot,
             commands::app_version,
+            commands::elevation_status,
+            commands::broker_self_test,
         ])
         .run(tauri::generate_context!())
         .expect("failed to start the SIO window");

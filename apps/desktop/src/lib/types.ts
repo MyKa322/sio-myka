@@ -57,6 +57,11 @@ export interface SystemSnapshot {
   disks: DiskInfo[]
 }
 
+export interface ElevationStatus {
+  alreadyElevated: boolean
+  helperConnected: boolean
+}
+
 /** The shape `CommandError` serializes to. */
 export interface CommandErrorPayload {
   code: string

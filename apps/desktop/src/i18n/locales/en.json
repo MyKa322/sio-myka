@@ -56,7 +56,17 @@
     "themeLight": "Light",
     "themeDark": "Dark",
     "about": "About",
-    "version": "Version"
+    "version": "Version",
+    "adminAccess": "Administrator access",
+    "adminHint": "SIO starts without administrator rights. It asks only when a change actually needs them, and then reuses that permission for the rest of the session.",
+    "adminState": "Status",
+    "adminAlreadyElevated": "Running as administrator",
+    "adminConnected": "Helper running — no further prompt",
+    "adminNotConnected": "Not requested yet",
+    "adminTest": "Test administrator access",
+    "adminTesting": "Waiting for confirmation…",
+    "adminTestExplain": "Writes one value to the registry and immediately undoes it. Windows will ask for permission.",
+    "adminTestOk": "Worked — the change was applied and reverted."
   },
   "placeholder": {
     "title": "Not built yet",

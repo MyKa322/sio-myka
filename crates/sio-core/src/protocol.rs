@@ -63,8 +63,15 @@ pub enum BrokerOp {
 }
 
 /// A successful operation's payload.
+///
+/// **Adjacently** tagged, not internally tagged. An internal tag cannot represent a
+/// newtype variant wrapping a primitive — `ExitCode(i32)` would fail to serialize at
+/// runtime, and since a response that fails to encode is a response that never arrives,
+/// the symptom is a caller hanging forever rather than a clean error. The adjacent form
+/// (`{"result": "...", "value": ...}`) encodes every shape, so the next variant someone
+/// adds cannot reintroduce this.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(tag = "result", rename_all = "snake_case")]
+#[serde(tag = "result", content = "value", rename_all = "snake_case")]
 pub enum OpOutput {
     /// Nothing to return; the operation either worked or errored.
     Unit,
@@ -253,6 +260,44 @@ mod tests {
             }),
         };
         let json = serde_json::to_string(&frame).unwrap();
+        assert_eq!(serde_json::from_str::<ClientFrame>(&json).unwrap(), frame);
+    }
+
+    #[test]
+    fn every_op_output_variant_survives_a_round_trip() {
+        // Regression guard. `ExitCode(i32)` could not be encoded under the original
+        // internally-tagged representation, and because the failure happened while
+        // writing the reply, the caller simply waited forever. Any new variant must be
+        // added here.
+        let outputs = [
+            OpOutput::Unit,
+            OpOutput::PriorValue(PriorValue::Absent),
+            OpOutput::PriorValue(PriorValue::Present(crate::tweak::RegistryValue::Dword(1))),
+            OpOutput::PriorState(PriorState {
+                name: "DiagTrack".into(),
+                start_type: crate::tweak::ServiceStartType::Automatic,
+                was_running: true,
+            }),
+            OpOutput::RestorePoint(RestorePointOutcome::Created { sequence_number: 3 }),
+            OpOutput::ExitCode(0),
+            OpOutput::ExitCode(-1),
+        ];
+
+        for output in outputs {
+            let json = serde_json::to_string(&output)
+                .unwrap_or_else(|e| panic!("{output:?} failed to serialize: {e}"));
+            assert_eq!(serde_json::from_str::<OpOutput>(&json).unwrap(), output);
+        }
+    }
+
+    #[test]
+    fn a_full_response_frame_with_an_exit_code_encodes() {
+        // The exact frame that used to be dropped on the floor.
+        let frame = ClientFrame::Response {
+            request_id: 1,
+            result: Ok(OpOutput::ExitCode(0)),
+        };
+        let json = serde_json::to_string(&frame).expect("must encode");
         assert_eq!(serde_json::from_str::<ClientFrame>(&json).unwrap(), frame);
     }
 
