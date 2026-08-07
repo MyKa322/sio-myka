@@ -13,9 +13,9 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
-  # Fail on warnings in CI without forcing `-D warnings` on local builds, where a
-  # warning mid-refactor is normal.
-  RUSTFLAGS: -D warnings
+  # NB: deliberately no global `RUSTFLAGS: -D warnings`. Cargo applies RUSTFLAGS to
+  # dependencies as well, so one warning in a third-party crate we don't control would
+  # break the build. Warnings are enforced on our own code via the clippy step instead.
 
 jobs:
   frontend:
@@ -57,7 +57,7 @@ jobs:
         run: cargo fmt --all --check
 
       - name: Clippy
-        run: cargo clippy --workspace --all-targets
+        run: cargo clippy --workspace --all-targets -- -D warnings
 
       - name: Tests
         run: cargo test --workspace
