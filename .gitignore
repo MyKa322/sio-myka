@@ -10,6 +10,8 @@ dist-ssr/
 
 # Tauri
 apps/desktop/src-tauri/gen/
+# Sidecar staged by scripts/prepare-broker.mjs — a build artifact, not a source file.
+apps/desktop/src-tauri/binaries/
 
 # Updater signing keys — NEVER commit these
 *.key

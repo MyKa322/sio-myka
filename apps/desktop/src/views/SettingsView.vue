@@ -16,6 +16,49 @@ const elevation = ref<ElevationStatus | null>(null)
 const testing = ref(false)
 const testResult = ref<{ ok: boolean; message: string; detail?: string } | null>(null)
 
+type UpdateState =
+  | { phase: 'idle' }
+  | { phase: 'checking' }
+  | { phase: 'upToDate' }
+  | { phase: 'available'; version: string }
+  | { phase: 'downloading' }
+  | { phase: 'ready' }
+  | { phase: 'failed'; detail: string }
+
+const update = ref<UpdateState>({ phase: 'idle' })
+/** Held between the check and the install so we do not fetch the manifest twice. */
+let pending: Awaited<ReturnType<typeof import('@tauri-apps/plugin-updater').check>> = null
+
+async function checkUpdates() {
+  update.value = { phase: 'checking' }
+  try {
+    const { check } = await import('@tauri-apps/plugin-updater')
+    pending = await check()
+    update.value = pending
+      ? { phase: 'available', version: pending.version }
+      : { phase: 'upToDate' }
+  } catch (thrown) {
+    // No network, no release published yet, or a dev build with no updater endpoint.
+    update.value = { phase: 'failed', detail: String(thrown) }
+  }
+}
+
+async function installUpdate() {
+  if (!pending) return
+  update.value = { phase: 'downloading' }
+  try {
+    await pending.downloadAndInstall()
+    update.value = { phase: 'ready' }
+  } catch (thrown) {
+    update.value = { phase: 'failed', detail: String(thrown) }
+  }
+}
+
+async function restart() {
+  const { relaunch } = await import('@tauri-apps/plugin-process')
+  await relaunch()
+}
+
 async function refreshElevation() {
   elevation.value = await elevationStatus().catch(() => null)
 }
@@ -142,6 +185,55 @@ function changeLocale(next: Locale) {
           <p class="font-medium">{{ testResult.message }}</p>
           <p v-if="testResult.detail" class="selectable mt-1 font-mono text-xs break-all text-ink-muted">
             {{ testResult.detail }}
+          </p>
+        </div>
+      </StatCard>
+
+      <StatCard :title="t('settings.updates')">
+        <p class="text-sm text-pretty text-ink-muted">{{ t('settings.updatesHint') }}</p>
+
+        <div class="mt-3 flex flex-wrap items-center gap-2">
+          <button
+            class="rounded-lg border border-line px-3 py-1.5 text-sm font-medium transition-colors hover:bg-panel-muted disabled:opacity-50"
+            :disabled="update.phase === 'checking' || update.phase === 'downloading'"
+            @click="checkUpdates"
+          >
+            {{ update.phase === 'checking' ? t('settings.checking') : t('settings.checkUpdates') }}
+          </button>
+
+          <button
+            v-if="update.phase === 'available'"
+            class="rounded-lg bg-accent px-3 py-1.5 text-sm font-medium text-accent-ink transition-opacity hover:opacity-90"
+            @click="installUpdate"
+          >
+            {{ t('settings.installUpdate') }}
+          </button>
+
+          <button
+            v-if="update.phase === 'ready'"
+            class="rounded-lg bg-accent px-3 py-1.5 text-sm font-medium text-accent-ink transition-opacity hover:opacity-90"
+            @click="restart"
+          >
+            {{ t('settings.restartNow') }}
+          </button>
+        </div>
+
+        <p v-if="update.phase === 'upToDate'" class="mt-3 text-sm text-success">
+          {{ t('settings.upToDate') }}
+        </p>
+        <p v-else-if="update.phase === 'available'" class="mt-3 text-sm">
+          {{ t('settings.updateAvailable', { version: update.version }) }}
+        </p>
+        <p v-else-if="update.phase === 'downloading'" class="mt-3 text-sm text-ink-muted">
+          {{ t('settings.downloading') }}
+        </p>
+        <p v-else-if="update.phase === 'ready'" class="mt-3 text-sm text-success">
+          {{ t('settings.updateReady') }}
+        </p>
+        <div v-else-if="update.phase === 'failed'" class="mt-3 text-sm">
+          <p class="text-danger">{{ t('settings.updateFailed') }}</p>
+          <p class="selectable mt-1 font-mono text-xs break-all text-ink-muted">
+            {{ update.detail }}
           </p>
         </div>
       </StatCard>

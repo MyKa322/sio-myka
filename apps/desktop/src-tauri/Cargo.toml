@@ -26,6 +26,16 @@ sio-tweaks.workspace = true
 windows.workspace = true
 
 tauri = { version = "2", features = [] }
+# default-features = false swaps rustls for schannel. rustls pulls in `ring`, which
+# compiles C — and on a machine with several Visual Studio installs cc-rs can pick one
+# whose Windows SDK is not registered and fail with a missing `stddef.h`. schannel is
+# pure Rust bindings to the TLS stack Windows already ships, and it uses the OS
+# certificate store, which is the right behaviour for a Windows-only app anyway.
+tauri-plugin-updater = { version = "2", default-features = false, features = [
+    "native-tls",
+    "zip",
+] }
+tauri-plugin-process = "2"
 serde.workspace = true
 serde_json.workspace = true
 tokio.workspace = true

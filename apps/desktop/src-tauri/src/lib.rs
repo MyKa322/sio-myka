@@ -23,6 +23,11 @@ pub fn run() {
     let state = state::AppState::load().expect("the bundled catalogs must be valid");
 
     tauri::Builder::default()
+        // Updates are checked and applied from the frontend, on request — never
+        // silently on launch. A tool people run once after a reinstall should not
+        // surprise them by replacing itself mid-session.
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
         .manage(broker_state::BrokerState::new())
         .manage(state)
         .invoke_handler(tauri::generate_handler![

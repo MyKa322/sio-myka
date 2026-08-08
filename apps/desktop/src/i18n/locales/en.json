@@ -66,7 +66,18 @@
     "adminTest": "Test administrator access",
     "adminTesting": "Waiting for confirmation…",
     "adminTestExplain": "Writes one value to the registry and immediately undoes it. Windows will ask for permission.",
-    "adminTestOk": "Worked — the change was applied and reverted."
+    "adminTestOk": "Worked — the change was applied and reverted.",
+    "updates": "Updates",
+    "updatesHint": "SIO never updates itself in the background. Check when you want to.",
+    "checkUpdates": "Check for updates",
+    "checking": "Checking…",
+    "upToDate": "You are on the latest version.",
+    "updateAvailable": "Version {version} is available.",
+    "installUpdate": "Download and install",
+    "downloading": "Downloading…",
+    "updateReady": "Update installed. Restart to finish.",
+    "restartNow": "Restart now",
+    "updateFailed": "Could not check for updates."
   },
   "apps": {
     "title": "Apps",

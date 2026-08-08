@@ -29,10 +29,13 @@ What is left is packaging and auto-update.
 | M2 | Elevated broker + named-pipe IPC | Done |
 | M3 | Package providers, catalog, Apps + Profiles | Done |
 | M4 | Tweak engine, revert journal, debloat | Done |
-| M5 | Auto-update, release pipeline, v0.1.0 | Next |
+| M5 | Auto-update, release pipeline, v0.1.0 | Done |
 
-Known gap: `tauri build` does not yet bundle `sio-broker.exe`, so an *installed* copy
-cannot elevate. Running from source works, because cargo puts both binaries side by side.
+**Not yet verified on real hardware.** Every layer is tested — including against the
+real registry, the real Service Control Manager and the real `sio-broker.exe` over a
+real named pipe — but no software has actually been installed and no tweak actually
+applied through the full UAC path. Treat releases as pre-release until that happens,
+and try it on a throwaway VM first.
 
 ## Where software comes from
 
@@ -89,6 +92,19 @@ catalog/         apps.json, tweaks.json
 `src-tauri` deliberately contains no logic: each command deserializes, delegates to a
 crate, and maps the result. That is what lets `cargo test` cover the interesting parts
 without launching a window.
+
+## Installing
+
+Grab the `.exe` (NSIS) or `.msi` from the
+[latest release](https://github.com/MyKa322/sio-myka/releases/latest).
+
+SmartScreen will warn on first run: SIO has no Authenticode certificate. That warning is
+accurate — it means "nobody paid to vouch for this binary", not "this binary is known to
+be fine". Choose *More info* → *Run anyway* only if you trust the build.
+
+In-app updates are a separate matter and *are* verified: each update is signed with the
+project's minisign key and rejected if the signature does not match. Check for them under
+**Settings → Updates**; SIO never updates itself in the background.
 
 ## Building
 

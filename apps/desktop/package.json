@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:full": "node scripts/prepare-broker.mjs --debug && vite",
     "build": "vue-tsc --noEmit && vite build",
+    "build:full": "node scripts/prepare-broker.mjs && npm run build",
     "preview": "vite preview",
     "typecheck": "vue-tsc --noEmit",
     "test": "vitest run",
@@ -15,6 +17,8 @@
   "dependencies": {
     "@tanstack/vue-query": "^5.101.4",
     "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/plugin-process": "^2.3.0",
+    "@tauri-apps/plugin-updater": "^2.9.0",
     "pinia": "^4.0.2",
     "vue": "^3.5.41",
     "vue-i18n": "^11.4.8",
