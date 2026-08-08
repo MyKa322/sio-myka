@@ -68,12 +68,6 @@
     "adminTestExplain": "Writes one value to the registry and immediately undoes it. Windows will ask for permission.",
     "adminTestOk": "Worked — the change was applied and reverted."
   },
-  "placeholder": {
-    "title": "Not built yet",
-    "apps": "Browse a curated catalog and install everything in one pass. Arriving in milestone 3.",
-    "tweaks": "Privacy, performance and interface tuning — every change reversible. Arriving in milestone 4.",
-    "profiles": "Save your selections and replay them after the next reinstall. Arriving in milestone 3."
-  },
   "apps": {
     "title": "Apps",
     "subtitle": "Pick what you want, install it in one pass",
@@ -98,6 +92,40 @@
     "success": "Installed",
     "skipped": "Skipped",
     "failed": "Failed"
+  },
+  "tweaks": {
+    "title": "Tuning",
+    "subtitle": "Privacy, performance and interface — every change can be undone",
+    "apply": "Apply ({count})",
+    "applying": "Applying…",
+    "selected": "Selected: {count}",
+    "clear": "Clear",
+    "revert": "Undo",
+    "reverting": "Undoing…",
+    "confirmTitle": "Apply this?",
+    "confirmRisk": "This one changes how Windows behaves. Read the description before continuing.",
+    "confirmIrreversible": "Removing an app cannot be undone by SIO — getting it back needs the Microsoft Store.",
+    "confirmYes": "Apply anyway",
+    "restorePointCreated": "A restore point was created first.",
+    "restorePointThrottled": "No restore point: Windows makes at most one per day, and one already exists. Your changes can still be undone individually.",
+    "restorePointDisabled": "No restore point: System Protection is turned off for this drive. Your changes can still be undone individually.",
+    "restartRequired": "Restart Windows for everything to take effect.",
+    "summary": "Done: {ok} of {total}",
+    "revertFailed": "Some changes could not be put back.",
+    "revertIrreversible": "Removed and not restorable: {items}",
+    "empty": "No tuning options apply to this version of Windows.",
+    "close": "Close"
+  },
+  "tweakStatus": {
+    "applied": "On",
+    "not_applied": "Off",
+    "partial": "Partly on",
+    "unknown": "Unknown"
+  },
+  "risk": {
+    "low": "Safe",
+    "medium": "Changes behaviour",
+    "high": "Risky"
   },
   "category": {
     "browser": "Browsers",

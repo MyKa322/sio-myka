@@ -29,6 +29,7 @@ pub mod privileged;
 pub mod profile;
 pub mod progress;
 pub mod protocol;
+pub mod reader;
 pub mod sysinfo;
 pub mod text;
 pub mod tweak;
@@ -43,6 +44,7 @@ pub mod prelude {
     pub use crate::privileged::{PrivilegedOps, RestorePointOutcome};
     pub use crate::profile::Profile;
     pub use crate::progress::{Outcome, Progress, ProgressSink};
+    pub use crate::reader::SystemReader;
     pub use crate::sysinfo::SystemSnapshot;
     pub use crate::text::LocalizedText;
     pub use crate::tweak::{AppliedAction, JournalEntry, Tweak, TweakAction};

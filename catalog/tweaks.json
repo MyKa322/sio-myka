@@ -230,6 +230,150 @@
           "value": 0
         }
       ]
+    },
+    {
+      "id": "debloat.bing_news",
+      "name": {
+        "en": "Remove News",
+        "ru": "Удалить «Новости»",
+        "uk": "Видалити «Новини»"
+      },
+      "description": {
+        "en": "Removes the Bing News app. Reinstalling it later needs the Microsoft Store.",
+        "ru": "Удаляет приложение «Новости» от Bing. Вернуть его можно только через Microsoft Store.",
+        "uk": "Видаляє програму «Новини» від Bing. Повернути її можна лише через Microsoft Store."
+      },
+      "category": "debloat",
+      "risk": "low",
+      "applies": "both",
+      "requires_restart": false,
+      "actions": [
+        {
+          "type": "appx",
+          "package_family_name": "Microsoft.BingNews_8wekyb3d8bbwe",
+          "deprovision": true
+        }
+      ]
+    },
+    {
+      "id": "debloat.bing_weather",
+      "name": {
+        "en": "Remove Weather",
+        "ru": "Удалить «Погоду»",
+        "uk": "Видалити «Погоду»"
+      },
+      "description": {
+        "en": "Removes the Bing Weather app. Reinstalling it later needs the Microsoft Store.",
+        "ru": "Удаляет приложение «Погода» от Bing. Вернуть его можно только через Microsoft Store.",
+        "uk": "Видаляє програму «Погода» від Bing. Повернути її можна лише через Microsoft Store."
+      },
+      "category": "debloat",
+      "risk": "low",
+      "applies": "both",
+      "requires_restart": false,
+      "actions": [
+        {
+          "type": "appx",
+          "package_family_name": "Microsoft.BingWeather_8wekyb3d8bbwe",
+          "deprovision": true
+        }
+      ]
+    },
+    {
+      "id": "debloat.solitaire",
+      "name": {
+        "en": "Remove Solitaire Collection",
+        "ru": "Удалить «Коллекцию пасьянсов»",
+        "uk": "Видалити «Колекцію пасьянсів»"
+      },
+      "description": {
+        "en": "Removes the preinstalled Solitaire games and their advertising.",
+        "ru": "Удаляет предустановленные пасьянсы вместе с рекламой в них.",
+        "uk": "Видаляє попередньо встановлені пасьянси разом із рекламою в них."
+      },
+      "category": "debloat",
+      "risk": "low",
+      "applies": "both",
+      "requires_restart": false,
+      "actions": [
+        {
+          "type": "appx",
+          "package_family_name": "Microsoft.MicrosoftSolitaireCollection_8wekyb3d8bbwe",
+          "deprovision": true
+        }
+      ]
+    },
+    {
+      "id": "debloat.clipchamp",
+      "name": {
+        "en": "Remove Clipchamp",
+        "ru": "Удалить Clipchamp",
+        "uk": "Видалити Clipchamp"
+      },
+      "description": {
+        "en": "Removes the preinstalled Clipchamp video editor.",
+        "ru": "Удаляет предустановленный видеоредактор Clipchamp.",
+        "uk": "Видаляє попередньо встановлений відеоредактор Clipchamp."
+      },
+      "category": "debloat",
+      "risk": "low",
+      "applies": "windows11_only",
+      "requires_restart": false,
+      "actions": [
+        {
+          "type": "appx",
+          "package_family_name": "Clipchamp.Clipchamp_yxz26nhyzhsrt",
+          "deprovision": true
+        }
+      ]
+    },
+    {
+      "id": "debloat.phone_link",
+      "name": {
+        "en": "Remove Phone Link",
+        "ru": "Удалить «Связь с телефоном»",
+        "uk": "Видалити «Зв'язок із телефоном»"
+      },
+      "description": {
+        "en": "Removes Phone Link. Only useful if you pair an Android or iPhone with this PC.",
+        "ru": "Удаляет «Связь с телефоном». Нужна только при подключении Android или iPhone к этому ПК.",
+        "uk": "Видаляє «Зв'язок із телефоном». Потрібен лише для підключення Android або iPhone до цього ПК."
+      },
+      "category": "debloat",
+      "risk": "low",
+      "applies": "both",
+      "requires_restart": false,
+      "actions": [
+        {
+          "type": "appx",
+          "package_family_name": "Microsoft.YourPhone_8wekyb3d8bbwe",
+          "deprovision": true
+        }
+      ]
+    },
+    {
+      "id": "debloat.xbox_game_bar",
+      "name": {
+        "en": "Remove Xbox Game Bar",
+        "ru": "Удалить Xbox Game Bar",
+        "uk": "Видалити Xbox Game Bar"
+      },
+      "description": {
+        "en": "Removes the Game Bar overlay. Win+G stops working, and a few games lose their built-in recording and screenshot shortcuts.",
+        "ru": "Удаляет игровую панель. Win+G перестанет работать, а часть игр лишится встроенной записи и снимков экрана.",
+        "uk": "Видаляє ігрову панель. Win+G перестане працювати, а частина ігор втратить вбудований запис і знімки екрана."
+      },
+      "category": "debloat",
+      "risk": "medium",
+      "applies": "both",
+      "requires_restart": false,
+      "actions": [
+        {
+          "type": "appx",
+          "package_family_name": "Microsoft.XboxGamingOverlay_8wekyb3d8bbwe",
+          "deprovision": true
+        }
+      ]
     }
   ]
 }

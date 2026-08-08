@@ -37,6 +37,10 @@ pub fn run() {
             commands::save_profile,
             commands::delete_profile,
             commands::reveal_profiles_folder,
+            commands::list_tweaks,
+            commands::apply_tweaks,
+            commands::revert_tweak,
+            commands::list_journal,
         ])
         .run(tauri::generate_context!())
         .expect("failed to start the SIO window");

@@ -22,6 +22,8 @@ tauri-build = { version = "2", features = [] }
 sio-core.workspace = true
 sio-winsys.workspace = true
 sio-packages.workspace = true
+sio-tweaks.workspace = true
+windows.workspace = true
 
 tauri = { version = "2", features = [] }
 serde.workspace = true

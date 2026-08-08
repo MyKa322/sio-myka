@@ -1,14 +1,18 @@
 import { invoke } from '@tauri-apps/api/core'
 import { listen, type UnlistenFn } from '@tauri-apps/api/event'
 import type {
+  ApplyReport,
   AppsResponse,
   CommandErrorPayload,
   ElevationStatus,
   InstallReport,
+  JournalEntry,
   Profile,
   Progress,
   ProviderId,
+  RevertReport,
   SystemSnapshot,
+  TweakView,
 } from './types'
 
 /**
@@ -135,4 +139,36 @@ export function deleteProfile(name: string): Promise<void> {
 /** Open the profiles folder in Explorer, for copying one to or from a USB stick. */
 export function revealProfilesFolder(): Promise<void> {
   return call<void>('reveal_profiles_folder')
+}
+
+// --- Tweaks -----------------------------------------------------------------
+
+/**
+ * The tweak catalog for this Windows version, each with its current state.
+ *
+ * Read-only, so this never triggers a UAC prompt — the Tuning screen shows accurate
+ * state the moment it opens.
+ */
+export function listTweaks(locale: string): Promise<TweakView[]> {
+  return call<TweakView[]>('list_tweaks', { locale })
+}
+
+/** Apply tweaks. Prompts for administrator rights and creates a restore point first. */
+export function applyTweaks(tweakIds: string[]): Promise<ApplyReport> {
+  return call<ApplyReport>('apply_tweaks', { tweakIds })
+}
+
+/** Undo the most recent application of a tweak. */
+export function revertTweak(tweakId: string): Promise<RevertReport> {
+  return call<RevertReport>('revert_tweak', { tweakId })
+}
+
+/** The change history, newest first. */
+export function listJournal(): Promise<JournalEntry[]> {
+  return call<JournalEntry[]>('list_journal')
+}
+
+/** Subscribe to tweak progress. Remember to call the returned unlisten function. */
+export function onTweakProgress(handler: (progress: Progress) => void): Promise<UnlistenFn> {
+  return listen<Progress>('tweaks:progress', (event) => handler(event.payload))
 }

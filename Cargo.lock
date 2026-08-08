@@ -2860,12 +2860,14 @@ dependencies = [
  "serde_json",
  "sio-core",
  "sio-packages",
+ "sio-tweaks",
  "sio-winsys",
  "tauri",
  "tauri-build",
  "tokio",
  "tracing",
  "tracing-subscriber",
+ "windows 0.62.2",
 ]
 
 [[package]]

@@ -14,6 +14,7 @@ use sio_core::progress::ProgressSink;
 use sio_core::sysinfo::SystemSnapshot;
 use sio_core::tweak::{Hive, RegistryEdit, RegistryValue};
 use sio_packages::installer::{self, PlanItem, RoutingRunner};
+use sio_tweaks::TweakStatus;
 use tauri::{AppHandle, Emitter, State};
 
 /// Event name for streamed install progress.
@@ -239,4 +240,137 @@ pub async fn reveal_profiles_folder() -> CommandResult<()> {
     crate::profiles::reveal_folder()
         .await
         .map_err(CommandError::from)
+}
+
+// ---------------------------------------------------------------------------
+// Tweaks
+// ---------------------------------------------------------------------------
+
+/// Event name for streamed tweak progress.
+pub const TWEAK_PROGRESS_EVENT: &str = "tweaks:progress";
+
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TweakView {
+    pub id: String,
+    pub name: String,
+    pub description: String,
+    pub category: String,
+    pub risk: String,
+    pub requires_restart: bool,
+    pub requires_elevation: bool,
+    pub status: TweakStatus,
+    /// True when undoing it cannot fully restore the machine — Appx removal.
+    pub irreversible: bool,
+}
+
+/// The tweak catalog for this Windows version, with each tweak's current state.
+///
+/// Reads only, so this never triggers a UAC prompt.
+#[tauri::command]
+pub async fn list_tweaks(
+    state: State<'_, AppState>,
+    locale: String,
+) -> CommandResult<Vec<TweakView>> {
+    let reader = state.reader();
+    let mut out = Vec::new();
+
+    for tweak in state.applicable_tweaks() {
+        out.push(TweakView {
+            id: tweak.id.clone(),
+            name: tweak.name.get(&locale).to_string(),
+            description: tweak.description.get(&locale).to_string(),
+            category: format!("{:?}", tweak.category).to_lowercase(),
+            risk: format!("{:?}", tweak.risk).to_lowercase(),
+            requires_restart: tweak.requires_restart,
+            requires_elevation: tweak.requires_elevation(),
+            status: sio_tweaks::status(reader, tweak).await,
+            irreversible: tweak
+                .actions
+                .iter()
+                .any(|a| matches!(a, sio_core::tweak::TweakAction::Appx(_))),
+        });
+    }
+
+    Ok(out)
+}
+
+/// Apply tweaks, streaming progress as `tweaks:progress` events.
+#[tauri::command]
+pub async fn apply_tweaks(
+    app: AppHandle,
+    state: State<'_, AppState>,
+    broker: State<'_, BrokerState>,
+    tweak_ids: Vec<String>,
+) -> CommandResult<sio_tweaks::ApplyReport> {
+    let selected: Vec<_> = state
+        .applicable_tweaks()
+        .filter(|t| tweak_ids.contains(&t.id))
+        .cloned()
+        .collect();
+
+    let ops = broker.get().await.map_err(CommandError::from)?;
+
+    let (sink, mut rx) = ProgressSink::new();
+    let emitter = app.clone();
+    let forwarder = tokio::spawn(async move {
+        while let Some(progress) = rx.recv().await {
+            let _ = emitter.emit(TWEAK_PROGRESS_EVENT, &progress);
+        }
+    });
+
+    let report = sio_tweaks::apply_all(
+        ops.as_ref(),
+        state.journal(),
+        &selected,
+        sio_core::now_unix_ms(),
+        sink,
+    )
+    .await;
+    let _ = forwarder.await;
+
+    // Removing packages changes what a status check would report.
+    state.reader().invalidate().await;
+
+    Ok(report)
+}
+
+/// Undo the most recent application of a tweak.
+#[tauri::command]
+pub async fn revert_tweak(
+    state: State<'_, AppState>,
+    broker: State<'_, BrokerState>,
+    tweak_id: String,
+) -> CommandResult<sio_tweaks::RevertReport> {
+    let entry = state
+        .journal()
+        .newest_active_for(&tweak_id)
+        .await
+        .map_err(CommandError::from)?
+        .ok_or_else(|| {
+            CommandError::from(sio_core::Error::UnknownTweak {
+                id: tweak_id.clone(),
+            })
+        })?;
+
+    let ops = broker.get().await.map_err(CommandError::from)?;
+    let report = sio_tweaks::revert(
+        ops.as_ref(),
+        state.journal(),
+        &entry,
+        sio_core::now_unix_ms(),
+    )
+    .await
+    .map_err(CommandError::from)?;
+
+    state.reader().invalidate().await;
+    Ok(report)
+}
+
+/// The change history, newest first.
+#[tauri::command]
+pub async fn list_journal(
+    state: State<'_, AppState>,
+) -> CommandResult<Vec<sio_core::tweak::JournalEntry>> {
+    state.journal().list().await.map_err(CommandError::from)
 }

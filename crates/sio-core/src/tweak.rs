@@ -237,6 +237,28 @@ pub struct JournalEntry {
     /// Unix milliseconds.
     pub applied_at: u64,
     pub actions: Vec<AppliedAction>,
+    /// When this entry was undone, if it has been.
+    ///
+    /// Reverted entries are kept rather than deleted: the record of what was changed
+    /// and put back is exactly what someone needs when diagnosing "my machine started
+    /// behaving oddly last Tuesday".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reverted_at: Option<u64>,
+}
+
+impl JournalEntry {
+    pub fn new(tweak_id: impl Into<String>, applied_at: u64, actions: Vec<AppliedAction>) -> Self {
+        Self {
+            tweak_id: tweak_id.into(),
+            applied_at,
+            actions,
+            reverted_at: None,
+        }
+    }
+
+    pub fn is_reverted(&self) -> bool {
+        self.reverted_at.is_some()
+    }
 }
 
 impl JournalEntry {
@@ -279,14 +301,14 @@ mod tests {
     fn revert_plan_runs_newest_first() {
         // Both actions touched the same value. The first capture (Absent) is the real
         // original state, so it must be applied last to win.
-        let entry = JournalEntry {
-            tweak_id: "t".into(),
-            applied_at: 0,
-            actions: vec![
+        let entry = JournalEntry::new(
+            "t",
+            0,
+            vec![
                 reg_action("Same", PriorValue::Absent),
                 reg_action("Same", PriorValue::Present(RegistryValue::Dword(1))),
             ],
-        };
+        );
 
         let plan = entry.revert_plan();
         assert_eq!(plan.len(), 2);
@@ -314,17 +336,17 @@ mod tests {
 
     #[test]
     fn appx_removal_is_excluded_from_the_revert_plan() {
-        let entry = JournalEntry {
-            tweak_id: "debloat.news".into(),
-            applied_at: 0,
-            actions: vec![
+        let entry = JournalEntry::new(
+            "debloat.news",
+            0,
+            vec![
                 reg_action("Flag", PriorValue::Absent),
                 AppliedAction::AppxRemoved {
                     package_family_name: "Microsoft.BingNews_8wekyb3d8bbwe".into(),
                     deprovisioned: true,
                 },
             ],
-        };
+        );
 
         assert_eq!(
             entry.revert_plan().len(),

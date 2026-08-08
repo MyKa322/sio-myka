@@ -14,6 +14,8 @@ pub mod elevation;
 #[cfg(windows)]
 pub mod ops;
 #[cfg(windows)]
+pub mod readers;
+#[cfg(windows)]
 pub mod registry;
 #[cfg(windows)]
 pub mod services;
@@ -24,3 +26,5 @@ pub use inventory::probe;
 
 #[cfg(windows)]
 pub use ops::InProcessOps;
+#[cfg(windows)]
+pub use readers::InProcessReader;

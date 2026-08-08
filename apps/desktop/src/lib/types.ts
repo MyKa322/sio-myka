@@ -122,6 +122,55 @@ export interface Profile {
   tweaks: string[]
 }
 
+// --- Tweaks -----------------------------------------------------------------
+
+export type TweakStatus = 'applied' | 'not_applied' | 'partial' | 'unknown'
+export type Risk = 'low' | 'medium' | 'high'
+
+export interface TweakView {
+  id: string
+  name: string
+  description: string
+  category: string
+  risk: Risk
+  requiresRestart: boolean
+  requiresElevation: boolean
+  status: TweakStatus
+  /** Undoing this cannot fully restore the machine — currently means Appx removal. */
+  irreversible: boolean
+}
+
+/** What Windows did when asked for a restore point. */
+export type RestorePointOutcome =
+  | { outcome: 'created'; sequence_number: number }
+  | { outcome: 'skipped_throttled' }
+  | { outcome: 'skipped_disabled' }
+
+export type TweakOutcome = { tweakId: string } & (
+  | { status: 'success' }
+  | { status: 'skipped'; reason: string }
+  | { status: 'failed'; message: string }
+)
+
+export interface ApplyReport {
+  items: TweakOutcome[]
+  restorePoint: RestorePointOutcome | null
+  restartRequired: boolean
+}
+
+export interface RevertReport {
+  tweakId: string
+  failures: string[]
+  irreversible: string[]
+}
+
+export interface JournalEntry {
+  tweak_id: string
+  applied_at: number
+  actions: unknown[]
+  reverted_at?: number
+}
+
 /** The shape `CommandError` serializes to. */
 export interface CommandErrorPayload {
   code: string

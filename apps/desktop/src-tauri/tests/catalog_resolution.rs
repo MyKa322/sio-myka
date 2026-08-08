@@ -10,14 +10,63 @@
 
 #![cfg(windows)]
 
-use sio_core::catalog::AppCatalog;
+use sio_core::catalog::{AppCatalog, TweakCatalog};
 use sio_core::package::ProviderId;
+use sio_core::tweak::TweakAction;
 use sio_packages::ProviderRegistry;
 
 const APPS_JSON: &str = include_str!("../../../../catalog/apps.json");
+const TWEAKS_JSON: &str = include_str!("../../../../catalog/tweaks.json");
 
 fn catalog() -> AppCatalog {
     AppCatalog::from_json(APPS_JSON).expect("the shipped catalog must be valid")
+}
+
+#[test]
+fn no_debloat_tweak_targets_a_protected_package() {
+    // The backstop in `sio_winsys::system` refuses these at runtime, but a catalog
+    // entry that would be refused is a bug in the catalog: the user would tick it,
+    // watch it fail, and learn nothing. Catch it here instead.
+    let tweaks = TweakCatalog::from_json(TWEAKS_JSON).expect("the shipped tweaks must be valid");
+
+    let offenders: Vec<_> = tweaks
+        .tweaks
+        .iter()
+        .flat_map(|t| t.actions.iter().map(move |a| (t.id.clone(), a)))
+        .filter_map(|(id, action)| match action {
+            TweakAction::Appx(pkg)
+                if sio_winsys::system::is_protected(&pkg.package_family_name) =>
+            {
+                Some(format!("{id} -> {}", pkg.package_family_name))
+            }
+            _ => None,
+        })
+        .collect();
+
+    assert!(
+        offenders.is_empty(),
+        "these tweaks target protected packages: {offenders:#?}"
+    );
+}
+
+#[test]
+fn every_debloat_tweak_names_a_plausible_package_family() {
+    // A package family name is `Name_PublisherId`. A typo that drops the publisher
+    // suffix would silently match nothing and the tweak would look permanently applied.
+    let tweaks = TweakCatalog::from_json(TWEAKS_JSON).unwrap();
+
+    for tweak in &tweaks.tweaks {
+        for action in &tweak.actions {
+            if let TweakAction::Appx(pkg) = action {
+                let pfn = &pkg.package_family_name;
+                assert!(
+                    pfn.contains('_') && !pfn.ends_with('_'),
+                    "`{}` has a malformed package family name: {pfn}",
+                    tweak.id
+                );
+            }
+        }
+    }
 }
 
 /// Whether this machine can support the real-provider checks.

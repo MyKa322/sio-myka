@@ -16,10 +16,11 @@ Available in English, Russian and Ukrainian.
 
 ## Status
 
-Early development. The app builds, opens, reports the system it is running on, installs
-software from the catalog through winget/Chocolatey/Scoop, and saves your selection as a
-reusable profile. Tuning is not implemented yet — that screen says so plainly rather
-than pretending.
+Early development, but functionally complete for its own purpose: the app reports the
+system it is running on, installs software from the catalog through
+winget/Chocolatey/Scoop, applies reversible privacy and performance tweaks, removes
+preinstalled bloat, and saves the whole selection as a profile to replay next time.
+What is left is packaging and auto-update.
 
 | Milestone | What it delivers | Status |
 | --- | --- | --- |
@@ -27,8 +28,8 @@ than pretending.
 | M1 | System dashboard end-to-end | Done |
 | M2 | Elevated broker + named-pipe IPC | Done |
 | M3 | Package providers, catalog, Apps + Profiles | Done |
-| M4 | Tweak engine, revert journal, debloat | Next |
-| M5 | Auto-update, release pipeline, v0.1.0 | Planned |
+| M4 | Tweak engine, revert journal, debloat | Done |
+| M5 | Auto-update, release pipeline, v0.1.0 | Next |
 
 Known gap: `tauri build` does not yet bundle `sio-broker.exe`, so an *installed* copy
 cannot elevate. Running from source works, because cargo puts both binaries side by side.
