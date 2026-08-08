@@ -10,6 +10,7 @@ authors.workspace = true
 
 [dependencies]
 sio-core.workspace = true
+sio-winsys.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 async-trait.workspace = true

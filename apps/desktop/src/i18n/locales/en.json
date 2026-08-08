@@ -74,6 +74,58 @@
     "tweaks": "Privacy, performance and interface tuning — every change reversible. Arriving in milestone 4.",
     "profiles": "Save your selections and replay them after the next reinstall. Arriving in milestone 3."
   },
+  "apps": {
+    "title": "Apps",
+    "subtitle": "Pick what you want, install it in one pass",
+    "searchPlaceholder": "Find an app…",
+    "allCategories": "All",
+    "selected": "Selected: {count}",
+    "selectAll": "Select all",
+    "clear": "Clear",
+    "install": "Install ({count})",
+    "installing": "Installing…",
+    "installed": "Installed",
+    "unavailable": "No source on this PC",
+    "noResults": "Nothing matches that search.",
+    "sources": "Sources",
+    "noSources": "No package manager was found. winget ships with Windows 11 — updating App Installer from the Store usually fixes this.",
+    "output": "Output",
+    "summary": "Done: {ok} of {total}",
+    "rebootRequired": "Restart Windows to finish.",
+    "close": "Close"
+  },
+  "status": {
+    "success": "Installed",
+    "skipped": "Skipped",
+    "failed": "Failed"
+  },
+  "category": {
+    "browser": "Browsers",
+    "communication": "Communication",
+    "development": "Development",
+    "media": "Media",
+    "graphics": "Graphics",
+    "gaming": "Gaming",
+    "utilities": "Utilities",
+    "security": "Security",
+    "office": "Office",
+    "drivers": "Drivers"
+  },
+  "profiles": {
+    "title": "Profiles",
+    "subtitle": "Save what you picked, then replay it after the next reinstall",
+    "namePlaceholder": "e.g. Gaming PC",
+    "save": "Save selection",
+    "apply": "Apply",
+    "delete": "Delete",
+    "empty": "No profiles yet. Pick some apps on the Apps screen, then save them here.",
+    "nothingSelected": "Nothing is selected yet — pick some apps first.",
+    "appsCount": "Apps: {count}",
+    "tweaksCount": "Tweaks: {count}",
+    "openFolder": "Open folder",
+    "openFolderHint": "Profiles are plain JSON files. Copy one to a USB stick before you wipe the machine, and drop it back here afterwards.",
+    "applied": "Loaded into your selection."
+  },
   "errors": {
     "io": "A file could not be read or written",
     "json": "Malformed data",

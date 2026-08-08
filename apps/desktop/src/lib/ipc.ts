@@ -1,5 +1,15 @@
 import { invoke } from '@tauri-apps/api/core'
-import type { CommandErrorPayload, ElevationStatus, SystemSnapshot } from './types'
+import { listen, type UnlistenFn } from '@tauri-apps/api/event'
+import type {
+  AppsResponse,
+  CommandErrorPayload,
+  ElevationStatus,
+  InstallReport,
+  Profile,
+  Progress,
+  ProviderId,
+  SystemSnapshot,
+} from './types'
 
 /**
  * An error raised by a Rust command.
@@ -79,4 +89,50 @@ export function elevationStatus(): Promise<ElevationStatus> {
  */
 export function brokerSelfTest(): Promise<string> {
   return call<string>('broker_self_test')
+}
+
+// --- Apps -------------------------------------------------------------------
+
+/** The catalog, resolved against what this machine can install. */
+export function listApps(locale: string): Promise<AppsResponse> {
+  return call<AppsResponse>('list_apps', { locale })
+}
+
+/** Re-probe the package managers and their inventories. */
+export function refreshProviders(): Promise<ProviderId[]> {
+  return call<ProviderId[]>('refresh_providers')
+}
+
+/**
+ * Install a set of catalog apps.
+ *
+ * Prompts for administrator rights once, up front, then works through the batch.
+ * Subscribe with {@link onInstallProgress} before calling to see it happen.
+ */
+export function installApps(appIds: string[]): Promise<InstallReport> {
+  return call<InstallReport>('install_apps', { appIds })
+}
+
+/** Subscribe to install progress. Remember to call the returned unlisten function. */
+export function onInstallProgress(handler: (progress: Progress) => void): Promise<UnlistenFn> {
+  return listen<Progress>('install:progress', (event) => handler(event.payload))
+}
+
+// --- Profiles ---------------------------------------------------------------
+
+export function listProfiles(): Promise<Profile[]> {
+  return call<Profile[]>('list_profiles')
+}
+
+export function saveProfile(name: string, apps: string[], tweaks: string[]): Promise<Profile> {
+  return call<Profile>('save_profile', { name, apps, tweaks })
+}
+
+export function deleteProfile(name: string): Promise<void> {
+  return call<void>('delete_profile', { name })
+}
+
+/** Open the profiles folder in Explorer, for copying one to or from a USB stick. */
+export function revealProfilesFolder(): Promise<void> {
+  return call<void>('reveal_profiles_folder')
 }

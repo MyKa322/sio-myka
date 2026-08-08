@@ -6,16 +6,34 @@
 
 use crate::broker_state::BrokerState;
 use crate::error::{CommandError, CommandResult};
+use crate::state::AppState;
 use serde::Serialize;
+use sio_core::package::ProviderId;
+use sio_core::profile::Profile;
+use sio_core::progress::ProgressSink;
 use sio_core::sysinfo::SystemSnapshot;
 use sio_core::tweak::{Hive, RegistryEdit, RegistryValue};
-use tauri::State;
+use sio_packages::installer::{self, PlanItem, RoutingRunner};
+use tauri::{AppHandle, Emitter, State};
+
+/// Event name for streamed install progress.
+pub const INSTALL_PROGRESS_EVENT: &str = "install:progress";
 
 /// Read-only hardware and OS inventory for the dashboard.
 #[tauri::command]
 pub async fn system_snapshot() -> CommandResult<SystemSnapshot> {
     sio_winsys::probe().await.map_err(CommandError::from)
 }
+
+/// The app version, so the UI can show it without duplicating the number.
+#[tauri::command]
+pub fn app_version() -> &'static str {
+    env!("CARGO_PKG_VERSION")
+}
+
+// ---------------------------------------------------------------------------
+// Elevation
+// ---------------------------------------------------------------------------
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -64,8 +82,161 @@ pub async fn broker_self_test(broker: State<'_, BrokerState>) -> CommandResult<S
     ))
 }
 
-/// The app version, so the UI can show it without duplicating the number.
+// ---------------------------------------------------------------------------
+// Apps
+// ---------------------------------------------------------------------------
+
+/// One catalog app, flattened and localized for display.
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AppView {
+    pub id: String,
+    pub name: String,
+    pub description: String,
+    pub category: String,
+    pub homepage: Option<String>,
+    pub tags: Vec<String>,
+    /// Whether some available provider can install it.
+    pub installable: bool,
+    /// Whether it already appears in a provider's inventory.
+    pub installed: bool,
+    /// The provider that would be used.
+    pub provider: Option<ProviderId>,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AppsResponse {
+    pub apps: Vec<AppView>,
+    pub available_providers: Vec<ProviderId>,
+}
+
+/// The catalog, resolved against what this machine can actually install.
 #[tauri::command]
-pub fn app_version() -> &'static str {
-    env!("CARGO_PKG_VERSION")
+pub async fn list_apps(state: State<'_, AppState>, locale: String) -> CommandResult<AppsResponse> {
+    let providers = state.providers().await;
+    let available = providers.available().to_vec();
+
+    let apps = state
+        .apps()
+        .apps
+        .iter()
+        .map(|entry| {
+            let source = entry.preferred_source(&available);
+            AppView {
+                id: entry.id.clone(),
+                name: entry.name.clone(),
+                description: entry.description.get(&locale).to_string(),
+                category: format!("{:?}", entry.category).to_lowercase(),
+                homepage: entry.homepage.clone(),
+                tags: entry.tags.clone(),
+                installable: source.is_some(),
+                installed: entry
+                    .sources
+                    .iter()
+                    .any(|s| providers.is_installed(s.provider, &s.id)),
+                provider: source.map(|s| s.provider),
+            }
+        })
+        .collect();
+
+    Ok(AppsResponse {
+        apps,
+        available_providers: available,
+    })
+}
+
+/// Re-probe the package managers and their inventories.
+#[tauri::command]
+pub async fn refresh_providers(state: State<'_, AppState>) -> CommandResult<Vec<ProviderId>> {
+    Ok(state.refresh_providers().await.available().to_vec())
+}
+
+/// Install a set of catalog apps, streaming progress as `install:progress` events.
+#[tauri::command]
+pub async fn install_apps(
+    app: AppHandle,
+    state: State<'_, AppState>,
+    broker: State<'_, BrokerState>,
+    app_ids: Vec<String>,
+) -> CommandResult<installer::InstallReport> {
+    let providers = state.providers().await;
+    let available = providers.available().to_vec();
+
+    // Resolve ids to concrete packages first. An id with no usable source is dropped
+    // here and reported by the installer, rather than failing the whole batch.
+    let items: Vec<PlanItem> = app_ids
+        .iter()
+        .filter_map(|id| {
+            let entry = state.apps().get(id)?;
+            let source = entry.preferred_source(&available)?;
+            Some(PlanItem {
+                app_id: entry.id.clone(),
+                display_name: entry.name.clone(),
+                package: source.clone(),
+            })
+        })
+        .collect();
+
+    // Elevation is requested once, up front, so the UAC prompt appears before the
+    // batch starts rather than in the middle of it.
+    let ops = broker.get().await.map_err(CommandError::from)?;
+    let runner = RoutingRunner::new(ops);
+
+    let (sink, mut rx) = ProgressSink::new();
+    let emitter = app.clone();
+    let forwarder = tokio::spawn(async move {
+        while let Some(progress) = rx.recv().await {
+            // A failed emit means the window went away; the install continues.
+            let _ = emitter.emit(INSTALL_PROGRESS_EVENT, &progress);
+        }
+    });
+
+    let report = installer::install_all(&items, &providers, &runner, sink).await;
+    let _ = forwarder.await;
+
+    // Inventory is stale now that things were installed.
+    state.refresh_providers().await;
+
+    Ok(report)
+}
+
+// ---------------------------------------------------------------------------
+// Profiles
+// ---------------------------------------------------------------------------
+
+#[tauri::command]
+pub async fn list_profiles() -> CommandResult<Vec<Profile>> {
+    crate::profiles::list().await.map_err(CommandError::from)
+}
+
+#[tauri::command]
+pub async fn save_profile(
+    name: String,
+    apps: Vec<String>,
+    tweaks: Vec<String>,
+) -> CommandResult<Profile> {
+    let mut profile = Profile::new(name, sio_core::now_unix_ms());
+    profile.apps = apps;
+    profile.tweaks = tweaks;
+
+    crate::profiles::save(&profile)
+        .await
+        .map_err(CommandError::from)?;
+    Ok(profile)
+}
+
+#[tauri::command]
+pub async fn delete_profile(name: String) -> CommandResult<()> {
+    crate::profiles::delete(&name)
+        .await
+        .map_err(CommandError::from)
+}
+
+/// Open the profiles folder, so a profile can be copied to or from a USB stick.
+#[tauri::command]
+pub async fn reveal_profiles_folder() -> CommandResult<()> {
+    crate::profiles::reveal_folder()
+        .await
+        .map_err(CommandError::from)
 }

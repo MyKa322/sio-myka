@@ -16,18 +16,18 @@ Available in English, Russian and Ukrainian.
 
 ## Status
 
-Early development. The app builds, opens, reports the system it is running on, and can
-perform privileged operations through its elevated helper. Installing apps and applying
-tweaks are not implemented yet — the Apps, Tuning and Profiles screens say so plainly
-rather than pretending.
+Early development. The app builds, opens, reports the system it is running on, installs
+software from the catalog through winget/Chocolatey/Scoop, and saves your selection as a
+reusable profile. Tuning is not implemented yet — that screen says so plainly rather
+than pretending.
 
 | Milestone | What it delivers | Status |
 | --- | --- | --- |
 | M0 | Workspace, Tauri + Vue shell, i18n, CI | Done |
 | M1 | System dashboard end-to-end | Done |
 | M2 | Elevated broker + named-pipe IPC | Done |
-| M3 | Package providers, catalog, Apps + Profiles | Next |
-| M4 | Tweak engine, revert journal, debloat | Planned |
+| M3 | Package providers, catalog, Apps + Profiles | Done |
+| M4 | Tweak engine, revert journal, debloat | Next |
 | M5 | Auto-update, release pipeline, v0.1.0 | Planned |
 
 Known gap: `tauri build` does not yet bundle `sio-broker.exe`, so an *installed* copy

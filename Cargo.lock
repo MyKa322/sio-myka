@@ -2859,6 +2859,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sio-core",
+ "sio-packages",
  "sio-winsys",
  "tauri",
  "tauri-build",
@@ -2875,6 +2876,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sio-core",
+ "sio-winsys",
  "tokio",
  "tracing",
 ]

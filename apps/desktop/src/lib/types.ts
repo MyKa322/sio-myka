@@ -62,6 +62,66 @@ export interface ElevationStatus {
   helperConnected: boolean
 }
 
+export type ProviderId = 'winget' | 'chocolatey' | 'scoop'
+
+export interface AppView {
+  id: string
+  name: string
+  description: string
+  category: string
+  homepage: string | null
+  tags: string[]
+  installable: boolean
+  installed: boolean
+  provider: ProviderId | null
+}
+
+export interface AppsResponse {
+  apps: AppView[]
+  availableProviders: ProviderId[]
+}
+
+/**
+ * `Outcome` flattened into `ItemReport`, so `status` sits alongside the other fields.
+ * The extra key depends on the variant: `reason` for skipped, `message` for failed.
+ */
+export type ItemReport = {
+  appId: string
+  displayName: string
+  exitCode?: number
+  rebootRequired: boolean
+} & (
+  | { status: 'success' }
+  | { status: 'skipped'; reason: string }
+  | { status: 'failed'; message: string }
+)
+
+export interface InstallReport {
+  items: ItemReport[]
+}
+
+/** Payload of the `install:progress` event. */
+export type Progress =
+  | { kind: 'started'; item: string }
+  | { kind: 'log'; line: string }
+  | { kind: 'percent'; item: string; percent: number }
+  | {
+      kind: 'finished'
+      item: string
+      outcome:
+        | { status: 'success' }
+        | { status: 'skipped'; reason: string }
+        | { status: 'failed'; message: string }
+    }
+
+export interface Profile {
+  schema_version: number
+  name: string
+  created_at: number
+  apps: string[]
+  tweaks: string[]
+}
+
 /** The shape `CommandError` serializes to. */
 export interface CommandErrorPayload {
   code: string
