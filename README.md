@@ -137,6 +137,14 @@ cmd /c '"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Buil
 
 ## Testing
 
+The app crate bundles `sio-broker.exe` as a Tauri sidecar, and `tauri-build` checks it
+exists — so on a fresh checkout, stage it once before running cargo directly. The npm
+scripts do this for you; bare `cargo` does not.
+
+```bash
+node apps/desktop/scripts/prepare-broker.mjs --debug
+```
+
 ```bash
 cargo test --workspace
 ```

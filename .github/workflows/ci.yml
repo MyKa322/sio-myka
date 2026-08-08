@@ -53,6 +53,16 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # `externalBin` makes tauri-build check the sidecar exists, so even `cargo check`
+      # on the app crate needs it staged. Same script the bundler uses, so there is one
+      # definition of how the helper gets built and placed.
+      - name: Stage the elevated helper
+        run: node apps/desktop/scripts/prepare-broker.mjs --debug
+
       - name: Format
         run: cargo fmt --all --check
 
@@ -74,6 +84,8 @@ jobs:
 
       # Validates the checked-in catalog against the same rules the app applies at
       # runtime, so a malformed entry fails review instead of a user's install.
+      # Runs on Linux precisely because sio-core has no platform dependencies — if this
+      # ever needs Windows, something has leaked into the wrong crate.
       - name: Validate catalogs
         run: cargo test -p sio-core --test catalog_files
 
