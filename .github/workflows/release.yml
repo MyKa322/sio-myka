@@ -42,14 +42,26 @@ jobs:
           projectPath: apps/desktop
           tagName: ${{ github.ref_name }}
           releaseName: SIO ${{ github.ref_name }}
-          # Marked pre-release deliberately: the install and tweak paths have not yet
-          # been exercised on real hardware end to end. Drop this once they have.
-          prerelease: true
+          # NOT marked pre-release, despite this being early software. GitHub's
+          # `/releases/latest` endpoint skips pre-releases entirely, so flagging it
+          # makes the updater's own manifest URL 404 and silently disables in-app
+          # updates. The maturity warning lives in the release body instead, where
+          # people actually read it.
+          prerelease: false
           releaseDraft: false
           releaseBody: |
-            Windows installer below (`.exe` is the NSIS installer, `.msi` the MSI).
+            Windows installer below — `.exe` is the NSIS installer, `.msi` the MSI.
+
+            ### Before you install
+
+            **This has not been tested on real hardware end to end.** Every layer has
+            automated tests, including against the real registry and the real elevated
+            helper, but no package has actually been installed and no tweak actually
+            applied through a live UAC prompt. **Try it on a throwaway VM first.**
 
             **Unsigned.** SmartScreen will warn on first run — SIO has no Authenticode
-            certificate. Choose *More info* → *Run anyway* if you trust this build.
+            certificate. That warning is accurate: it means nobody paid to vouch for
+            this binary, not that the binary is known to be fine.
 
-            In-app updates are verified against the project's signing key.
+            In-app updates are a separate matter and *are* verified — each update is
+            signed with the project's key and rejected if the signature does not match.
